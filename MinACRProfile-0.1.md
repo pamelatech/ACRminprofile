@@ -128,6 +128,8 @@ In the case that an essential acr claim was included in the authentication reque
   * Always populate the acrs attribute when an essential acr claim is requested. 
 
 An example of a valid ACR return is listed below:
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/ae8683d6-f24a-4bbc-bedb-3f1281485298)
+
  
 ### ACR Validation
 The RP MUST discard the assertion and refuse to grant access if the following is true:
