@@ -104,6 +104,8 @@ Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
 Note: the order of the values listed in the request are significant
 
 An example of a valid ACR request in the form of a claims request parameter follows: 
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/e493f68f-fe85-4af5-96f0-9bf04bd0062d)
+
  
 ### ACR Evaluation
 IDPs MUST test the authentication request for the simultaneous presence of the acr_values request parameter and an essential acr claim in the claims parameter. If both exist, the IDP MUST return an error.  
