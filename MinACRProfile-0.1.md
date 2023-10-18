@@ -197,6 +197,8 @@ This means that the IDP:
 If the ACR Evaluation is successful, the IDP MUST:
 * Include an AuthnStatement element in any returned assertions that contains an AuthnContext element containing the AuthnContextClassRef that matched the end user’s current authentication experience.  See [SAML2] §2.7.2.2.
 * The AuthnContext attribute is defined to be a single value.  If exact comparison matching is used, This single value SHOULD match one and only one of the ACRs in the requested ACR list.
+* ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/e23755d5-a6df-46cb-85da-406c4e7d2f7f)
+
  
 #### Optional: Multi-Valued Authentication Context
 
@@ -240,12 +242,12 @@ Attacker adds an acr_values parameter with less stringent controls to the end of
 Eg:  if the RP specifies 3 ACRs but the IDP doesn’t recognize 2 of them what happens?
 
 ### Summary of Changes
-Specification Type of Change  Examples of extension
-* SAML 2.0 Core None  
-* OpenID  Connect core  None  
-* OpenID Connect Discovery 1.0  Definition of new supported attributes  
-* SAML 2.0 Attribute Extension
-* Definition of new supported attributes  Example from SimpleSAMLphp
+| Specification | Type of Change | Examples of extension |
+|---------------|----------------|------------------------|
+| SAML 2.0      |  Core | None |
+| OpenID Connect | core | None |  
+| OpenID Connect Discovery 1.0 | Definition of new supported attributes  
+| SAML 2.0 Attribute Extension | Definition of new supported attributes | Example from SimpleSAMLphp
 
  
 # References
