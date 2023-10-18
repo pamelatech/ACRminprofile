@@ -9,10 +9,10 @@ September 2023
 Status:  Text is pseudo normative, some sections still in bullet/paragraph form. Error conditions not yet discussed.
 
 ## Abstract
-OpenID Connect 1.0 and SAML 2.0 are federated identity specifications with built-in mechanisms for negotiating authentication context controls, but the default treatment of requests and responses in each of those protocols differ significantly.  While SAML 2.0 requires strict processing of authentication context by default, OpenID Connect by default presumes “voluntary” processing. This specification profiles OpenID Connect for equivalently strict processing of authentication context to that defined by default in SAML 2.0 and supplies examples and test criteria for both specifications to give implementers high confidence that a given set of required contexts can be requested and validated in either protocol or in nested protocol use cases.  
+OpenID Connect 1.0 and SAML 2.0 are federated identity specifications with built-in mechanisms for negotiating the authentication-related security controls that are required before access can be granted, but the default treatment of requests and responses in each of those protocols differ significantly.  While SAML 2.0 requires strict processing of authentication context by default, OpenID Connect by default presumes “voluntary” processing. This specification profiles OpenID Connect to accomplish equivalent processing behavior to the default SAML 2.0 specification, adding examples and test criteria for both specifications to give implementers high confidence that any given set of controls can be reliably enforce without worries about protocol divergence. 
 
 ## Introduction
-SAML 2.0 and OpenID Connect evolved decades apart from each other, and yet operate effectively side-by-side in many identity architectures today as mechanisms for secure introduction of end users across federated parties.  Each protocol  contains a mechanism for specifying the authentication security controls that must be in place during this process, and both protocols use the term ‘authentication context’ to describe the security controls each party agrees to. Authentication contexts are referred to by identifiers and these identifiers are referred to as ACRs, or authentication context class references.   
+SAML 2.0 and OpenID Connect evolved decades apart from each other, and yet operate effectively side-by-side in many identity architectures today as mechanisms for secure introduction of end users across federated parties. Each protocol contains a mechanism for specifying the authentication security controls that must be in place during this process, and both protocols use the term ‘authentication context’ to describe the security controls each party agrees to. Authentication contexts are referred to by identifiers and these identifiers are referred to as ACRs, or authentication context class references.   
 
 This document profiles OpenID Connect such that request parameters, response attributes and validation steps match the default operation of SAML 2.0. To meet this goal, the protocol defines a concept of an ACR Request and an ACR response as a protocol-agnostic concept, then points to the relevant specification text that implements each step.  The profile also defines the test criteria, error conditions, and additional validations that federated parties may choose to use to additionally identify risk and ensure in every possible way that the profile is adhered to.
 
@@ -29,27 +29,39 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 In the .txt version of this document, values are quoted to indicate that they are to be taken literally. When using these values in protocol messages, the quotes MUST NOT be used as part of the value. In the HTML version of this document, values to be taken literally are indicated by the use of this fixed-width font.
 
 ## New Terminology
-* Security Control:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
+
+ * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
 Authentication Context:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).  
-* Authentication Context Class Reference (ACR) or ACR Value:   A unique identifier associated to a given context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably.
-* Evidence: Information used to corroborate or explain how a security control was executed.
-* ACR Request: the portion of a federated authentication request defining ACR-related requirements. 
-* ACR Response:  the portion of a returned federated assertion that are set as a direct result of an ACR Request
-* Unsolicited Assertion: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
+ * __Authentication Context Class Reference (ACR) or ACR Value__:   A unique identifier associated to a given context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably.
+* __Evidence__: Information used to corroborate or explain how a security control was executed.
+ * __ACR Request__: the portion of a federated authentication request defining ACR-related requirements. 
+ * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request
+ * __Unsolicited Assertion__: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
 
  ## Common Protocol Concepts
 Where differing terms are defined in the federated protocols referenced in this profile, the chart below can be used to translate.  For the purposes of this document, a Relying Party (RP) is a federated party that consumes identity information, and an Identity Provider (IdP) is the federated party that issues the identity information.  The container that wraps identity data into a verifiable bundle associated to a uniquely identifiable subject is an assertion, and the assertion contains name/value information pairs called claims.
  
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 
-![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/ac3f99c7-65a2-46be-afa6-9f6bdf69976f)
+
+| Min Profile Term | Definition | SAML 2.0 Equivalent | OpenID Connect Equivalent |
+| -------- | -------- | -------- | ------- |
+| Identity Provider (IDP) | The federated party that determines the end user's authentication context and issues an assertion. | Identity Provider<br>[SAML §3.4] | OpenID Provider<br>[OIDC §1.2]
+| Relying Party | The federated party that receives and validates the assertion | Relying Party (RP), Service Provider (SP)<br>[SAML §3.4] | OpenID Relying Party<br>[OIDC §1.2]
+| Assertion | A structured document introducing an end-user to a RP by binding a set of claims to a subject identifier | SAML Assertion | ID Token
+| Claim | A unit of descriptive information with a name and value | Attribute | Claim
+| Authentication Request | An HTTP-based request from an RP to an IDP containing negotiated security control requirements | Authentication Request<br>[SAML §3.4] | Authentication Request<br>[OIDC §3.1.2.1]
+| Authentication Response | A browser-based interaction from an IDP to an RP | SAML Response<br>[SAML §3.2] | Authentication Response<br>[OIDC §3.1.2.5]
+| End-User | The human that the subject represents | Presenter | End-User
+| Subject | Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP | `Subject` | `sub`
+| ACR Claim | The claim in the assertion that communicates the authentication context. | `AuthenticationContext` | `acr`
+
 
 ## Concepts without a Direct Cross-protocol Equivalent
 
 There are three in-scope areas where the protocols do not exactly match: 
 
-Voluntary ACR Claims
-
+### Voluntary ACR Claims
 [OIDC] formalized the concept of  a “voluntary” authentication context claim; there is no matching normative concept existing in [SAML2], but any IDP that includes an ACR claim in an assertion that was not asked for is treating the ACR as voluntary.  Any claim can be explicitly marked as voluntary or essential in [OIDC], but the acr claim is voluntary by default. There are three different circumstances where an ACR claim is considered voluntary:
  1. When no authentication request precedes an assertion sent to an RP.   This can only happen in [SAML2], because only [SAML2] allows IDP-initiated assertions.
  2. When an [OIDC] authentication request categorizes the acr claim as voluntary explicitly or when the request defaults to voluntary by not specifying either way.  
