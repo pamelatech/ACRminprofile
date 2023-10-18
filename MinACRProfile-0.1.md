@@ -169,12 +169,20 @@ Additional normative requirements for RPs include the following:
 
 #### Examples of Valid ACR Requests (within a SAML authentication request)
 Require telekinesis if available, but finger snap if telekinesis is not available.
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/e2a51126-9b14-4895-b9d0-d46c8a298fd0)
+
  
 Require a minimum Assurance Level of Three (out of Five).
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/d8265018-94de-4058-ab1c-aa426c9f1892)
+
  
 Require Better than Assurance Level Four (out of Five).
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/15b769ca-2887-4460-a992-c9d953b3ed61)
+
  
 Require a Maximum of Assurance Level Two (out of Five).
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/f3c73ef2-56d1-44af-8053-1b4d594b52bb)
+
  
 ### ACR Evaluation
 The IDP is under the following obligations if they receive an authentication request containing a RequestedAuthnContext element:
