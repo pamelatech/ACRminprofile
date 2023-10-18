@@ -35,25 +35,7 @@ Where differing terms are defined in the federated protocols referenced in this 
  
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 
-
-Min Profile Term	Definition	SAML 2.0 Equivalent 	OpenID Connect Equivalent
-Identity Provider (IDP)	The federated party that determines the end user’s authentication context and issues an assertion.	Identity Provider [SAML §3.4]
-OpenID Provider [OIDC §1.2]
-
-Relying Party (RP)	The federated party that receives and validates the assertion	Relying Party (RP), Service Provider (SP)  [SAML §3.4]
-OpenID Relying Party [OIDC §1.2]
-
-Assertion	A structured document introducing an end-user to a RP by binding a set of claims to a subject identifier	SAML Assertion	ID_token
-Claim	A unit of descriptive information with a name & value	Attribute	Claim
-Authentication Request	An HTTP-based request from an RP to an IDP containing negotiated security control requirements	Authentication Request [SAML §3.4]
-Authentication Request [OIDC §3.1.2.1]
-
-Authentication Response	A browser-based interaction from an IDP to an RP 	SAML Response [SAML §3.2]
-Authentication Response [OIDC §3.1.2.5]
-
-End-User	The human that the subject represents	Presenter	End-User
-Subject	Identifier shared between IDP and RP, expected to be be unique for the RP with respect to the IDP	Subject	sub
-ACR Claim	The claim in the assertion that communicates the authentication context. 	AuthenticationContext	acr
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/ac3f99c7-65a2-46be-afa6-9f6bdf69976f)
 
 ## Concepts without a Direct Cross-protocol Equivalent
 There are three in-scope areas where the protocols do not exactly match: 
