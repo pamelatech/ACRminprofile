@@ -1,4 +1,4 @@
-# Authentication Context & Method Parity in SAML and OpenID Connect
+# Authentication Context/Method Parity in SAML and OpenID Connect
 ##### P. Dingle, Microsoft
 To be submitted to: OpenID Foundation Connect WG
 
@@ -6,29 +6,27 @@ Last modified: February 2024
 Status: Proposed for adoption in the Connect WG at OpenID Foundation
 
 ## Abstract
-Authentication context is a concept from two popular single sign-on specifications (SAML 2.0 and OpenID Connect 1.0) which enable domains to negotiate which security controls must be enforced prior to federated access. While the general idea of authentication concept is the same between the two specifications, small differences create uncertainty. This document describes the mechanisms, attributes, and expected outcomes in each specification through a common lens, outlining where parity can be achieved between the specification and where gaps exist, with a goal of assisting an implementer to configure and troubleshoot connections predictably and reliably.
+Authentication context is a concept from two popular single sign-on specifications (SAML 2.0 and OpenID Connect 1.0) that enables domains to negotiate which security controls must be enforced prior to federated access. While the general idea of authentication context is the same between the two specifications, small differences exist. This document describes the mechanisms, attributes, and expected outcomes in each specification through a common lens, outlining where parity can be achieved between the specification and where gaps exist, with a goal of assisting an implementer to configure and troubleshoot connections predictably and reliably.
 
 ## Introduction
-OpenID Connect 1.0(OIDC) and SAML 2.0(SAML) are federated identity specifications that securely introduce an end user from one authoritative domain to another non-authoritative domain (sometimes called a relying party). Both specifications use a similarly named concept to identify the security control that federating parties will require and enforce - that concept is called authentication context. While the concepts are similar, the default treatment of requests and responses in each of those protocols differ significantly. The largest difference is in how "essential" the security control is considered during default operation. SAML considers satisfaction of a requested authentication context to be a strictly necessary pre-requisite for issuing an assertion. OIDC considers enforcement of authentication context to be "voluntary", meaning that satisfaction of an authentication context is preferred but require prior to issuing an id_token. 
+OpenID Connect 1.0(OIDC) and SAML 2.0(SAML) are federated login specifications that securely introduce an end user from one authoritative domain to another non-authoritative domain (sometimes called a relying party). Both specifications use a similarly named concept to identify the security control that federating parties will require and enforce - that concept is called authentication context. While the concepts are similar, the default treatment of requests and responses in each of those protocols differ significantly. The largest difference is in how "essential" the security control is considered during default operation. SAML considers satisfaction of a requested authentication context to be a strictly necessary pre-requisite for issuing an assertion. OIDC considers enforcement of authentication context to be "voluntary", meaning that satisfaction of an authentication context is preferred but require prior to issuing an id_token. 
 
-## Primary Concepts
-Authentication contexts are referred to by identifiers and these identifiers are referred to as ACRs, or authentication context class references.   
+## High Level Federation Concepts
+Federated login via SAML or OIDC is a passive browser interaction, where an end user controlling a browser is redirected between two web domains in order to leverage an existing session at one domain to bootstrap a session at a second domain. In some cases, the second domain may need to know exactly how the first domain authenticated the user.  An authentication context is a mutually-understood description of the security control or controls that were enforced at time of user authentication. 
 
-This document profiles OpenID Connect such that request parameters, response attributes and validation steps match the default operation of SAML 2.0. To meet this goal, the protocol defines a concept of an ACR Request and an ACR response as a protocol-agnostic concept, then points to the relevant specification text that implements each step.  The profile also defines the test criteria, error conditions, and additional validations that federated parties may choose to use to additionally identify risk and ensure in every possible way that the profile is adhered to.
+![HighLevelFedFlow](https://github.com/pamelatech/ACRminprofile/assets/2591320/9856619f-0b3b-4f0e-a13f-10c0731776d1)
 
-The minimum interoperability profile is created with the following principles in mind:
-* The profile must be compatible with the linked ratified core specifications. 
-* The profile may add additional attribute definitions, scopes, or metadata parameters where those additional elements are extensible by design in each specification.
-* The profile assumes breach and recommends pro-active additional validation to detect neglectful misconfiguration and/or abuse.  Absence of a claim or metadata element is never interpreted as intentional.
-* All error conditions are defined and are expected to be tested for accuracy by implementers.
 
-Requirements Notation and Conventions
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119 [RFC2119].
+## Authentication Context and ACR
 
-In the .txt version of this document, values are quoted to indicate that they are to be taken literally. When using these values in protocol messages, the quotes MUST NOT be used as part of the value. In the HTML version of this document, values to be taken literally are indicated by the use of this fixed-width font.
+## Authentication Method and AMR
 
-## New Terminology
+
+T
+
+
+### New Terminology
 
  * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
 Authentication Context:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).  
