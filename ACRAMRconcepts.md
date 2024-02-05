@@ -12,15 +12,14 @@ Authentication context is a concept from two popular single sign-on specificatio
 OpenID Connect 1.0(OIDC) and SAML 2.0(SAML) are federated login specifications that securely introduce an end user from one authoritative domain to another non-authoritative domain (sometimes called a relying party). Both specifications use a similarly named concept to identify the security control that federating parties will require and enforce - that concept is called authentication context. While the concepts are similar, the default treatment of requests and responses in each of those protocols differ significantly. The largest difference is in how "essential" the security control is considered during default operation. SAML considers satisfaction of a requested authentication context to be a strictly necessary pre-requisite for issuing an assertion. OIDC considers enforcement of authentication context to be "voluntary", meaning that satisfaction of an authentication context is preferred but require prior to issuing an id_token. 
 
 ## High Level Federation Concepts
-Federated login via SAML or OIDC is a passive browser interaction, where an end user controlling a browser is redirected between two web domains in order to leverage an existing session at one domain to bootstrap a session at a second domain. In some cases, the second domain may need to know exactly how the first domain authenticated the user.  An authentication context is a mutually-understood description of the security control or controls that were enforced at time of user authentication. 
+Federated login via SAML or OIDC is a passive browser interaction, where an end user controlling a browser is redirected between two web domains in order to leverage an existing session at one domain to bootstrap or refresh a session at a second domain. In some cases, the second domain may need to know exactly how the first domain authenticated the user. 
 
 ![HighLevelFedFlow](https://github.com/pamelatech/ACRminprofile/assets/2591320/9856619f-0b3b-4f0e-a13f-10c0731776d1)
 
+### Authentication Context and ACR
+An authentication context is a mutually-understood description of various security controls that were enforced at time of user authentication. 
 
-
-## Authentication Context and ACR
-
-## Authentication Method and AMR
+### Authentication Method and AMR
 
 
 T
