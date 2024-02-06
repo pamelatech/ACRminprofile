@@ -6,23 +6,15 @@ Last modified: February 2024
 Status: Proposed for adoption in the Connect WG at OpenID Foundation
 
 ## Abstract
-Authentication context is a concept from two popular single sign-on specifications (SAML 2.0 and OpenID Connect 1.0) that enables domains to negotiate which security controls must be enforced prior to federated access. While the general idea of authentication context is the same between the two specifications, small differences exist. This document describes the mechanisms, attributes, and expected outcomes in each specification through a common lens, outlining where parity can be achieved between the specification and where gaps exist, with a goal of assisting an implementer to configure and troubleshoot connections predictably and reliably.
+Authentication context is a concept from two popular single sign-on specifications (SAML 2.0 and OpenID Connect 1.0) that enables domains to negotiate which security controls must be enforced prior to federated access. While the general idea of authentication context is the same between the two specifications, small differences exist. This document describes the mechanisms, attributes, and expected outcomes in each specification through a common lens, outlining where parity can be achieved between the specifications and where gaps exist, with a goal of assisting an implementer to configure and troubleshoot connections predictably and reliably.
 
 ## Introduction
-OpenID Connect 1.0(OIDC) and SAML 2.0(SAML) are federated login specifications that securely introduce an end user from one authoritative domain to another non-authoritative domain (sometimes called a relying party). Both specifications use a similarly named concept to identify the security control that federating parties will require and enforce - that concept is called authentication context. While the concepts are similar, the default treatment of requests and responses in each of those protocols differ significantly. The largest difference is in how "essential" the security control is considered during default operation. SAML considers satisfaction of a requested authentication context to be a strictly necessary pre-requisite for issuing an assertion. OIDC considers enforcement of authentication context to be "voluntary", meaning that satisfaction of an authentication context is preferred but require prior to issuing an id_token. 
+OpenID Connect 1.0(OIDC) and SAML 2.0(SAML) are federated login specifications that securely introduce an end user from one authoritative domain to another non-authoritative domain (sometimes called a relying party). Both specifications use a similarly named concept to identify the security control that federating parties will require and enforce - that concept is called authentication context. While the concepts are similar, the default treatment of requests and responses in each of those protocols differ significantly. The largest difference is in how "essential" the security control is considered during default operation. SAML considers satisfaction of a requested authentication context to be a strictly necessary pre-requisite for issuing an assertion. OIDC considers enforcement of authentication context to be "voluntary", meaning that satisfaction of an authentication context is preferred but not required prior to issuing an id_token. 
 
 ## High Level Federation Concepts
 Federated login via SAML or OIDC is a passive browser interaction, where an end user controlling a browser is redirected between two web domains in order to leverage an existing session at one domain to bootstrap or refresh a session at a second domain. In some cases, the second domain may need to know exactly how the first domain authenticated the user. 
 
 ![HighLevelFedFlow](https://github.com/pamelatech/ACRminprofile/assets/2591320/9856619f-0b3b-4f0e-a13f-10c0731776d1)
-
-### Authentication Context and ACR
-An authentication context is a mutually-understood description of various security controls that were enforced at time of user authentication. 
-
-### Authentication Method and AMR
-
-
-T
 
 
 ### New Terminology
@@ -34,6 +26,7 @@ Authentication Context:  A security control applying requirements to the manner 
  * __ACR Request__: the portion of a federated authentication request defining ACR-related requirements. 
  * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request
  * __Unsolicited Assertion__: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
+ * __Authentication Method Reference (AMR)__: Unique identifier describing the specific authentication ceremony performed. 
 
  ## Common Protocol Concepts
 Where differing terms are defined in the federated protocols referenced in this profile, the chart below can be used to translate.  For the purposes of this document, a Relying Party (RP) is a federated party that consumes identity information, and an Identity Provider (IdP) is the federated party that issues the identity information.  The container that wraps identity data into a verifiable bundle associated to a uniquely identifiable subject is an assertion, and the assertion contains name/value information pairs called claims.
@@ -52,6 +45,7 @@ Where differing terms are defined in the federated protocols referenced in this 
 | End-User | The human that the subject represents | Presenter | End-User
 | Subject | Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP | `Subject` | `sub`
 | ACR Claim | The claim in the assertion that communicates the authentication context. | `AuthenticationContext` | `acr`
+| AMR Claim | The claim in the assertion that communicates the authentication method. | n/a | `amr`
 
 
 ## Concepts without a Direct Cross-protocol Equivalent
