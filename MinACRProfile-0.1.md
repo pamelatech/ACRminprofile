@@ -30,32 +30,24 @@ In the .txt version of this document, values are quoted to indicate that they ar
 
 ## Terminology
 
-
- * __Authentication Context__:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).  
- * __ACR (Authentication Context Class Reference)__:   A unique identifier associated to a given authentication context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably.
-* __Evidence__: Information used to corroborate or explain how a security control was executed.
+ * __Authentication Context__:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).
+ * __Assertion__: A structured document that binds a set of claims to a subject identifier. Analogous to an OIDC id_token. See [SAML] [OIDC].
+ * __ACR (Authentication Context Class Reference)__:   A unique identifier associated to a given authentication context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably. 
  * __ACR Request__: the portion of a federated authentication request defining ACR-related requirements. 
  * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request
+ * __Claim__: A unit of descriptive information with a name and value. Analogous to attribute.
+ * __End-User__: The human that the subject represents
+ * __Evidence__: Information used to corroborate or explain how a security control was executed.
+ * __IDP (Identity Provider)__: An entity that determines the end user's authentication context and issues an assertion. Bi-protocol term. See [SAML §3.4] and [OIDC §1.2].
+ * __RP (Relying Party)__: An entity that receives and validates an assertion. Used interchangeably with SP (Service Provider). See [SAML §3.4] and [OIDC §1.2]
  * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
+ * __Subject, sub__: Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP.
  * __Unsolicited Assertion__: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
 
  ## Use of Analogous Terms
 Where differing terms are defined in the federated protocols referenced in this profile, the chart below can be used to translate.  For the purposes of this document, a Relying Party (RP) is a federated party that consumes identity information, and an Identity Provider (IdP) is the federated party that issues the identity information.  The container that wraps identity data into a verifiable bundle associated to a uniquely identifiable subject is an assertion, and the assertion contains name/value information pairs called claims.
  
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
-
-
-| Min Profile Term | Definition | SAML 2.0 Equivalent | OpenID Connect Equivalent |
-| -------- | -------- | -------- | ------- |
-| Identity Provider (IDP) | The federated party that determines the end user's authentication context and issues an assertion. | Identity Provider<br>[SAML §3.4] | OpenID Provider<br>[OIDC §1.2]
-| Relying Party | The federated party that receives and validates the assertion | Relying Party (RP), Service Provider (SP)<br>[SAML §3.4] | OpenID Relying Party<br>[OIDC §1.2]
-| Assertion | A structured document introducing an end-user to a RP by binding a set of claims to a subject identifier | SAML Assertion | ID Token
-| Claim | A unit of descriptive information with a name and value | Attribute | Claim
-| Authentication Request | An HTTP-based request from an RP to an IDP containing negotiated security control requirements | Authentication Request<br>[SAML §3.4] | Authentication Request<br>[OIDC §3.1.2.1]
-| Authentication Response | A browser-based interaction from an IDP to an RP | SAML Response<br>[SAML §3.2] | Authentication Response<br>[OIDC §3.1.2.5]
-| End-User | The human that the subject represents | Presenter | End-User
-| Subject | Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP | `Subject` | `sub`
-| ACR Claim | The claim in the assertion that communicates the authentication context. | `AuthenticationContext` | `acr`
 
 
 ## Concepts without a Direct Cross-protocol Equivalent
