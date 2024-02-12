@@ -30,13 +30,13 @@ In the .txt version of this document, values are quoted to indicate that they ar
 
 ## Terminology
 
+ * __Assertion__: A structured document that binds a set of claims to a subject identifier. Analogous to a SAML assertion, OIDC id_token. See [SAML§2], [OIDC§2]. 
  * __Authentication Context__:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).
- * __Assertion__: A structured document that binds a set of claims to a subject identifier. Analogous to an OIDC id_token. See [SAML] [OIDC].
  * __ACR (Authentication Context Class Reference)__:   A unique identifier associated to a given authentication context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably. 
  * __ACR Request__: the portion of a federated authentication request defining ACR-related requirements. 
- * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request
+ * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request.
  * __Claim__: A unit of descriptive information with a name and value. Analogous to attribute.
- * __End-User__: The human that the subject represents
+ * __End-User__: The human that the subject represents.
  * __Evidence__: Information used to corroborate or explain how a security control was executed.
  * __IDP (Identity Provider)__: An entity that determines the end user's authentication context and issues an assertion. Bi-protocol term. See [SAML §3.4] and [OIDC §1.2].
  * __RP (Relying Party)__: An entity that receives and validates an assertion. Used interchangeably with SP (Service Provider). See [SAML §3.4] and [OIDC §1.2]
@@ -45,7 +45,7 @@ In the .txt version of this document, values are quoted to indicate that they ar
  * __Unsolicited Assertion__: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
 
  ## Use of Analogous Terms
-Where differing terms are defined in the federated protocols referenced in this profile, the chart below can be used to translate.  For the purposes of this document, a Relying Party (RP) is a federated party that consumes identity information, and an Identity Provider (IdP) is the federated party that issues the identity information.  The container that wraps identity data into a verifiable bundle associated to a uniquely identifiable subject is an assertion, and the assertion contains name/value information pairs called claims.
+Where differing terms exist in each protocol, an analogous relation is defined in the terminology section above. In any case discussing over-the-wire protocol interactions, protocol-correct terms will be used. For the purposes of this document, the terms IDP, RP, assertion, and claim should be considered as universal and their analogous terms understood from the Terminology section.
  
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 
@@ -262,8 +262,8 @@ Eg:  if the RP specifies 3 ACRs but the IDP doesn’t recognize 2 of them what h
 
  
 # References
-
-[SAML2]  S. Cantor et al. Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0. OASIS SSTC, March 2005. https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf 
+[OIDC] OpenID Connect Core 1.0 incorporating errata set 2. https://openid.net/specs/openid-connect-core-1_0.html.
+[SAML2]  S. Cantor et al. Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0. OASIS SSTC, March 2005. https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf. 
 [SAMLAuthnCxt]  J. Kemp et al. Authentication Context for the OASIS Security Assertion Markup Language (SAML) V2.0. OASIS SSTC, March 2005. https://docs.oasis-open.org/security/saml/v2.0/saml-authn-context-2.0-os.pdf 
 [SAMLMetadata] 
 [RFC2119] RFC 2119
