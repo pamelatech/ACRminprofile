@@ -17,10 +17,10 @@ Federated login via SAML or OIDC is a passive browser interaction, where an end 
 ![HighLevelFedFlow](https://github.com/pamelatech/ACRminprofile/assets/2591320/9856619f-0b3b-4f0e-a13f-10c0731776d1)
 
 
-### New Terminology
+### Terminology
 
- * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
-Authentication Context:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).  
+ * __Security Control__:  A named and defined safeguard that when enforced mitigates risk of misuse, fraud or attack.
+ * __Authentication Context__:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).  
  * __Authentication Context Class Reference (ACR) or ACR Value__:   A unique identifier associated to a given context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably.
 * __Evidence__: Information used to corroborate or explain how a security control was executed.
  * __ACR Request__: the portion of a federated authentication request defining ACR-related requirements. 
