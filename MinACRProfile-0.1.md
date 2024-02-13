@@ -54,8 +54,8 @@ Where differing terms exist in each protocol, an analogous relation is defined i
 ## High Level Architecture
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 
-## SAML 2.0 Authentication Context Non-Recommended Features
-This minimum interoperabilty profile explicitly does not attempt to alter SAML 2.0 functionality, however there is a small set of SAML 2.0 functionality that is explicitly not part of the interoperability profile and should be avoided by implementers:
+## SAML 2.0 Authentication Context Excluded Features
+This minimum interoperabilty profile explicitly does not attempt to alter SAML 2.0 functionality, however there is a small set of SAML 2.0 functionality that is from the interoperability profile and should be avoided by implementers:
  * Comparison operators (minimum, maximim, exist)
  * Authentication Context Declaration References
 
