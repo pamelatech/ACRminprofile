@@ -56,40 +56,31 @@ Where differing terms exist in each protocol, an analogous relation is defined i
 
 ## SAML 2.0 Authentication Context Excluded Features
 This minimum interoperabilty profile explicitly does not attempt to alter SAML 2.0 functionality, however there is a small set of SAML 2.0 functionality that is from the interoperability profile and should be avoided by implementers:
- * Comparison operators (minimum, maximim, exist)
+ * Comparison operators (`minimum`, `maximum`, `exist`)
  * Authentication Context Declaration References
 
-### Voluntary ACR Claims
-[OIDC] formalized the concept of  a “voluntary” authentication context claim; there is no matching normative concept existing in [SAML2], but any IDP that includes an ACR claim in an assertion that was not asked for is treating the ACR as voluntary.  Any claim can be explicitly marked as voluntary or essential in [OIDC], but the acr claim is voluntary by default. There are three different circumstances where an ACR claim is considered voluntary:
- 1. When no authentication request precedes an assertion sent to an RP.   This can only happen in [SAML2], because only [SAML2] allows IDP-initiated assertions.
- 2. When an [OIDC] authentication request categorizes the acr claim as voluntary explicitly or when the request defaults to voluntary by not specifying either way.  
- 3. When no ACR requirements were part of the authentication request, but the IDP returns an ACR claim any way.
-RP’s that enforce the rules in the ACR Validation section of this profile can safely process assertions where ACR is either voluntary or essential, but the RP may reject more assertions in the former case, leading to less positive user experience.
-
-## Authentication Context in Protocol Agnostic Terms
-Each of SAML 2.0 [SAML2] and OpenID Connect 1.0 [OIDC] have concepts of authentication context, and of agreement to evaluate security context matching a specific authentication context class reference (ACR).   ACR-related functionality falls into five distinct phases.
-
-#### Discovery of ACR Metadata
-A mechanism for automated lookup of standardized configuration properties for a given participant in a federated process.  
-#### ACR Request 
-A set of run-time controls embedded within a given authentication request representing the requirements an RP has for IDP processing of authentication context.
-#### ACR Evaluation
-The process by which an IDP determines whether an end user meets the criteria outlined in the ACR request and any additional interactions an IDP may initiate to bring an end-user into adherence to a given authentication context.
-#### ACR Return 
-Data included in the assertion returned to the RP that contains the exact authentication context that the IDP successfully evaluated for the current authentication instant.
-#### ACR Validation
-The process that an RP goes through to decide whether the IDP has acceptably processed the original ACR request.
 ## OpenID Connect Minimum Profile
 Requirements in this section are normative and augment the existing normative text in [OIDC]. 
+ACR-related functionality falls into five distinct phases.
+
+ 1. __Discovery of ACR Metadata__: A mechanism for automated lookup of standardized configuration properties for a given participant in a federated process.  
+ 1. __ACR Request__: A set of run-time controls embedded within a given authentication request representing the requirements an RP has for IDP processing of authentication context.
+ 1. __ACR Evaluation__: The process by which an IDP determines whether an end user meets the criteria outlined in the ACR request and any additional interactions an IDP may initiate to bring an end-user into adherence to a given authentication context.
+ 1. __ACR Return__: 
+Data included in the assertion returned to the RP that contains the exact authentication context that the IDP successfully evaluated for the current authentication instant.
+  1. __ACR Validation__:
+The process that an RP goes through to decide whether the IDP has acceptably processed the original ACR request.
+
 ### ACR Request
-#### Authentication Request Parameters
-The claims authentication request parameter defined in [OIDC] §5.5 is REQUIRED.   The acr_values authentication parameter defined in [OIDC] §3.1.2.1 MUST NOT be included in the authentication request.  In addition to the guidance in  [OIDC] §5.5.1.1.
+#### Request Parameters
+The claims parameter defined in [OIDC] §5.5 MUST be include in the authentication request. The `acr_values`parameter defined in [OIDC] §3.1.2.1 MUST NOT be included in the authentication request.  If the authentication request includes both the acr_values parameter and a claims parameter and the `acr` claim is a defined value the IDP MUST return an error (note this extends guidance in [OIDC] §5.5.1.1 .
+
 #### Claims Parameter Configuration
 Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
-* The id_token JSON object is REQUIRED.
-* The acr element of the id_token object is REQUIRED.
-* The essential element of the acr object MUST be set to true.
-* The values element of the acr object MUST be present.
+* The `id_token` JSON object is REQUIRED.
+* The `acr` element of the `id_token` object is REQUIRED.
+* The `essential` element of the acr object MUST be set to true.
+* The values element of the acr object MUST be present and contain at least one value.
 Note: the order of the values listed in the request are significant
 
 An example of a valid ACR request in the form of a claims request parameter follows: 
@@ -104,12 +95,12 @@ An example of a valid ACR request in the form of a claims request parameter foll
     }
  
 ### ACR Evaluation
-IDPs MUST test the authentication request for the simultaneous presence of the acr_values request parameter and an essential acr claim in the claims parameter. If both exist, the IDP MUST return an error.  
+IDPs MUST test the authentication request for the simultaneous presence of the `acr_values` request parameter and an essential `acr` claim in the claims parameter. If both exist, the IDP MUST return an error.  
 
 IDPs performing anomaly detection SHOULD be checking to see that federated connections consistently use this profile.   Authentication requests that usually contain an essential acr claim in the claims parameter but suddenly arrive with no acr requirements or voluntary acr requirements should be treated as suspicious. 
 
 If an IDP chooses to populate multiple authentication contexts for consumption by the RP, the following requirements apply:
-* The IDP MUST publish support for the acrs_supported metadata element as part of IDP discovery.
+* The IDP MUST publish support for the `acrs_supported` metadata element as part of IDP discovery.
 * The IDP MUST prevent the  acrs attribute from being directly populated by any other entity or for any other purpose at any time.   
 
 As stated in  [OIDC] §5.5.1.1:
@@ -142,7 +133,7 @@ An example of a valid ACR return is listed below:
 The RP MUST discard the assertion and refuse to grant access if the following is true:
 * The value in the acr attribute contains a string that does not match an originally requested value.
 * The returned assertion does not contain an acr attribute.
-* The IDP advertises support for acrs via the acrs_supported metadata attribute, but the acrs attribute is not present.
+* The IDP advertises support for acrs via the `acrs_supported` metadata attribute, but the acrs attribute is not present.
 
 ### ACR Metadata and Discovery
 This profile defines one new [OIDC] metadata element; this element enables a payload claim to be trusted as a protected security attribute.  Exact mechanisms for discovery of the metadata elements are not specified by this profile.
