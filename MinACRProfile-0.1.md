@@ -20,6 +20,7 @@ The minimum interoperability profile is created with the following principles in
 * The profile must be compatible with the linked ratified core specifications. 
 * The profile may add additional attribute definitions, scopes, or metadata parameters where those additional elements are extensible by design in each specification.
 * The profile assumes breach and recommends pro-active additional validation to detect neglectful misconfiguration and/or abuse.  Absence of a claim or metadata element is never interpreted as intentional.
+* Authentication Method and Authentication Method References (AMRs) are out of scope of this document.
 * All error conditions are defined and are expected to be tested for accuracy by implementers.
 
 Requirements Notation and Conventions
@@ -30,6 +31,7 @@ In the .txt version of this document, values are quoted to indicate that they ar
 
 ## Terminology
 
+ * __Analogous Term__: A single defined term used to refer to conceptually equivalent concepts in either SAML or OIDC. Analogous relationships are defined in the terminology section.
  * __Assertion__: A structured document that binds a set of claims to a subject identifier. Analogous to a SAML assertion, OIDC id_token. See [SAML§2], [OIDC§2]. 
  * __Authentication Context__:  A security control applying requirements to the manner in which a given subject is authenticated prior to issuance of a federated assertion.  In this specifications, authentication contexts are referred to by their class reference (also known as an ACR).
  * __ACR (Authentication Context Class Reference)__:   A unique identifier associated to a given authentication context, defined using the syntax and namespace matching the federated protocol in use. In this specification, an ACR and the authentication context control that it refers to are used interchangeably. 
@@ -37,22 +39,25 @@ In the .txt version of this document, values are quoted to indicate that they ar
  * __ACR Response__:  the portion of a returned federated assertion that are set as a direct result of an ACR Request.
  * __Claim__: A unit of descriptive information with a name and value. Analogous to attribute.
  * __End-User__: The human that the subject represents.
+ * __Essential Claim__: "A claim specified by the Client as being necessary to ensure a smooth authorization experience for the specific task requested by the End-User". 
  * __Evidence__: Information used to corroborate or explain how a security control was executed.
  * __IDP (Identity Provider)__: An entity that determines the end user's authentication context and issues an assertion. Bi-protocol term. See [SAML §3.4] and [OIDC §1.2].
- * __RP (Relying Party)__: An entity that receives and validates an assertion. Used interchangeably with SP (Service Provider). See [SAML §3.4] and [OIDC §1.2]
+ * __RP (Relying Party)__: An entity that receives and validates an assertion. Used interchangeably with SP (Service Provider) and Client. See [SAML §3.4] and [OIDC §1.2]
  * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
  * __Subject, sub__: Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP.
  * __Unsolicited Assertion__: an assertion arrives at an RP that is not the result of an authentication request.  This type of assertion occurs in [SAML2] and is the result of IDP-initiated federation.
+ * __Voluntary Claim__: "Claim specified by the Client as being useful but not Essential for the specific task requested by the End-User". See [OIDC §1.2]
 
- ## Use of Analogous Terms
-Where differing terms exist in each protocol, an analogous relation is defined in the terminology section above. In any case discussing over-the-wire protocol interactions, protocol-correct terms will be used. For the purposes of this document, the terms IDP, RP, assertion, and claim should be considered as universal and their analogous terms understood from the Terminology section.
- 
+ ### Use of Analogous Terms
+Where differing terms exist in each protocol, an analogous relation is defined in the terminology section above. In any case discussing over-the-wire protocol interactions, protocol-correct terms will be used. For the purposes of this document, the terms IDP, RP, assertion, and claim will be used throughout the document.
+
+## High Level Architecture
 ![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 
-
-## Concepts without a Direct Cross-protocol Equivalent
-
-There are three in-scope areas where the protocols do not exactly match: 
+## SAML 2.0 Authentication Context Non-Recommended Features
+This minimum interoperabilty profile explicitly does not attempt to alter SAML 2.0 functionality, however there is a small set of SAML 2.0 functionality that is explicitly not part of the interoperability profile and should be avoided by implementers:
+ * Comparison operators (minimum, maximim, exist)
+ * Authentication Context Declaration References
 
 ### Voluntary ACR Claims
 [OIDC] formalized the concept of  a “voluntary” authentication context claim; there is no matching normative concept existing in [SAML2], but any IDP that includes an ACR claim in an assertion that was not asked for is treating the ACR as voluntary.  Any claim can be explicitly marked as voluntary or essential in [OIDC], but the acr claim is voluntary by default. There are three different circumstances where an ACR claim is considered voluntary:
@@ -61,17 +66,8 @@ There are three in-scope areas where the protocols do not exactly match:
  3. When no ACR requirements were part of the authentication request, but the IDP returns an ACR claim any way.
 RP’s that enforce the rules in the ACR Validation section of this profile can safely process assertions where ACR is either voluntary or essential, but the RP may reject more assertions in the former case, leading to less positive user experience.
 
-### Multiple Authentication Contexts
-Neither [SAML2] nor [OIDC] explicitly supported the concept of an IDP returning more authentication contexts than the one that the IDP matched due to an RP request, however many modern implementations of both SAML and OpenID Connect have overloaded the ACR claim because there are strong business needs to communicate various contexts that the user may be operating in.  This profile defines an optional additional claim that can be configured for each of [SAML2] and [OIDC] to equivalently solve the problem. NOTE that this custom claim can only be trusted if the IDP advertises that the claim is protected – accepting a claim of the same name without verifying that the IDP implementation is managing that claim as a security claim would create a security vulnerability, since other actors could populate those claim values with non-authoritative values.
-### Authentication Methods (AMR)
-Authentication methods (AMR) were created in [OIDC] as a mechanism for providing evidence around how an authentication ceremony was completed. There is no concept of AMR in [SAML2] - this profile defines an optional additional claim that can be implemented by [SAML2] providers to equivalently support this feature. NOTE that this custom SAML attribute can only be trusted if the IDP advertises in metadata that the claim is protected – accepting a claim of the same name without verifying that the IDP implementation is managing that claim as a security claim would create a vulnerability, since other actors could populate those claim values with non-authoritative values.
-### Comparison Matching 
-Comparisons where a listed authentication context is matched against comparative operators such as “minimum”, “maximum” exist in SAML2 but not in OpenID Connect.  The issue with comparison matching is that both parties must understand the entire set involved in a request including unlisted authentication contexts that may be set members.   
-### Authentication Context Declaration References
-This is a SAML concept that doesn’t exist in OpenID Connect and is therefore ignored in this specification.
 ## Authentication Context in Protocol Agnostic Terms
 Each of SAML 2.0 [SAML2] and OpenID Connect 1.0 [OIDC] have concepts of authentication context, and of agreement to evaluate security context matching a specific authentication context class reference (ACR).   ACR-related functionality falls into five distinct phases.
- 
 
 #### Discovery of ACR Metadata
 A mechanism for automated lookup of standardized configuration properties for a given participant in a federated process.  
