@@ -6,7 +6,7 @@ To be submitted to: OpenID Foundation Connect WG
 
 September 2023
 
-Status:  Text is pseudo normative, some sections still in bullet/paragraph form. Error conditions not yet discussed.
+Status:  Draft.
 
 ## Abstract
 OpenID Connect 1.0 and SAML 2.0 are federated identity specifications with built-in mechanisms for negotiating the authentication-related security controls that are required before access can be granted, but the default treatment of requests and responses in each of those protocols differ significantly.  While SAML 2.0 requires strict processing of authentication context by default, OpenID Connect by default presumes “voluntary” processing. This specification profiles OpenID Connect to accomplish equivalent processing behavior to the default SAML 2.0 specification, adding examples and test criteria for both specifications to give implementers high confidence that any given set of controls can be reliably enforce without worries about protocol divergence. 
