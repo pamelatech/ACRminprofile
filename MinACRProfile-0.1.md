@@ -1,7 +1,7 @@
 Note: this file is open to members of the standards community 
 
 # Minimum Interoperable Profile for Authentication Context in Federated Protocols
-##### P. Dingle, Microsoft
+##### P. Dingle, Microsoft, D. Olds, Broadcom, A. Parecki, Okta
 To be submitted to: OpenID Foundation Connect WG
 
 September 2023
@@ -41,7 +41,7 @@ In the .txt version of this document, values are quoted to indicate that they ar
  * __End-User__: The human that the subject represents.
  * __Essential Claim__: "A claim specified by the Client as being necessary to ensure a smooth authorization experience for the specific task requested by the End-User". 
  * __Evidence__: Information used to corroborate or explain how a security control was executed.
- * __IDP (Identity Provider)__: An entity that determines the end user's authentication context and issues an assertion. Bi-protocol term. See [SAML §3.4] and [OIDC §1.2].
+ * __IDP (Identity Provider)__: An entity that determines the end user's authentication context and issues an assertion. Analogous to an OpenID Provider (OP). See [SAML §3.4] and [OIDC §1.2].
  * __RP (Relying Party)__: An entity that receives and validates an assertion. Used interchangeably with SP (Service Provider) and Client. See [SAML §3.4] and [OIDC §1.2]
  * __Security Control__:  A named and defined safeguard used to mitigate risk of misuse, fraud or attack.
  * __Subject, sub__: Identifier shared between IDP and RP, expected to be unique for the RP with respect to the IDP.
@@ -60,16 +60,13 @@ This minimum interoperabilty profile explicitly does not attempt to alter SAML 2
  * Authentication Context Declaration References
 
 ## OpenID Connect Minimum Profile
-Requirements in this section are normative and augment the existing normative text in [OIDC]. 
-ACR-related functionality falls into five distinct phases.
+Requirements in this section are normative and augment the existing normative requirements in [OIDC]. This profile defines five phases where ACR requirements are modified:
 
- 1. __Discovery of ACR Metadata__: A mechanism for automated lookup of standardized configuration properties for a given participant in a federated process.  
- 1. __ACR Request__: A set of run-time controls embedded within a given authentication request representing the requirements an RP has for IDP processing of authentication context.
- 1. __ACR Evaluation__: The process by which an IDP determines whether an end user meets the criteria outlined in the ACR request and any additional interactions an IDP may initiate to bring an end-user into adherence to a given authentication context.
- 1. __ACR Return__: 
-Data included in the assertion returned to the RP that contains the exact authentication context that the IDP successfully evaluated for the current authentication instant.
-  1. __ACR Validation__:
-The process that an RP goes through to decide whether the IDP has acceptably processed the original ACR request.
+ 1. __ACR Metadata__: An RP looks up ACR-related properties published by an IDP relating to profile adherence and claim support in advance of or at time of an individual federated interaction.  
+ 1. __ACR Request__: An RP generates an authentication request that contains parameters and values specifying one or more authentication contexts as an essential part of federated processing. 
+ 1. __ACR Evaluation__: An IDP evaluates an ACR request and determines whether an end user meets the criteria specified, performing any necessary interactions needed to bring an end-user into adherence, or determining that adherence is not possible.
+ 1. __ACR Return__: An IDP responds to a given ACR request with either an error message or a valid assertion containing ACR-compliant claims and claim values that matches the results of the ACR Evaluation.
+ 1. __ACR Validation__: An RP validates a received assertion to ensure the IDP has met all of the original requirements of the ACR Request and either allows access or returns an error to the user.
 
 ### ACR Request
 #### Request Parameters
