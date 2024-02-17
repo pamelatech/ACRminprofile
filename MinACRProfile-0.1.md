@@ -81,18 +81,21 @@ Requirements in this section are normative and augment the existing normative re
  1. __ACR Evaluation__: An IDP evaluates an ACR request and determines whether an end user meets the criteria specified, performing any necessary interactions needed to bring an end-user into adherence, or determining that adherence is not possible.
  1. __ACR Return__: An IDP responds to a given ACR request with either an error message or a valid assertion containing ACR-compliant claims and claim values that matches the results of the ACR Evaluation.
  1. __ACR Validation__: An RP validates a received assertion to ensure the IDP has met all of the original requirements of the ACR Request and either allows access or returns an error to the user.
-![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
-### ACR Request
-#### Request Parameters
-The claims parameter defined in [OIDC] §5.5 MUST be include in the authentication request. The `acr_values`parameter defined in [OIDC] §3.1.2.1 MUST NOT be included in the authentication request.  If the authentication request includes both the acr_values parameter and a claims parameter and the `acr` claim is a defined value the IDP MUST return an error (note this extends guidance in [OIDC] §5.5.1.1 .
 
-#### Claims Parameter Configuration
+### ACR Request
+The ACR Request is an [OIDC] authentication request that specifies one or more essential authentication contexts.  This profile defines two different options to specify authentication contexts, one that uses a default [OIDC] mechanism and a second that redefines an OIDC parameter and requires explicit metadata confirmation. 
+
+One of the following methods MUST be implemented. If the authentication request includes both the acr_values parameter and a claims parameter and the `acr` claim is a defined value the IDP MUST return an error (note this extends guidance in [OIDC] §5.5.1.1 . 
+
+#### Essential ACR via Claims Request Parameter
+The RP MUST include the claims parameter defined in [OIDC] §5.5 in the authentication request.
+
 Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
 * The `id_token` JSON object is REQUIRED.
 * The `acr` element of the `id_token` object is REQUIRED.
 * The `essential` element of the acr object MUST be set to true.
 * The values element of the acr object MUST be present and contain at least one value.
-Note: the order of the values listed in the request are significant
+Note: the order of the values listed in the request are significant.
 
 An example of a valid ACR request in the form of a claims request parameter follows: 
 
@@ -104,6 +107,15 @@ An example of a valid ACR request in the form of a claims request parameter foll
         }
       }
     }
+
+#### Essential ACR via Redefined acr_values Parameter
+If ACR Metadata fetched by the RP contains the metadata XX, the RP MUST consider the `acr_values` parameter defined in [OIDC] §3.1.2.1 as specifying essential acr values. 
+
+An example of a valid ACR request in the form of a claims request parameter follows: 
+
+      [phr,mfa,pwd]
+
+
  
 ### ACR Evaluation
 IDPs MUST test the authentication request for the simultaneous presence of the `acr_values` request parameter and an essential `acr` claim in the claims parameter. If both exist, the IDP MUST return an error.  
