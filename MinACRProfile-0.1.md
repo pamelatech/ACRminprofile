@@ -51,10 +51,7 @@ In the .txt version of this document, values are quoted to indicate that they ar
  ### Use of Analogous Terms
 Where differing terms exist in each protocol, an analogous relation is defined in the terminology section above. In any case discussing over-the-wire protocol interactions, protocol-correct terms will be used. For the purposes of this document, the terms IDP, RP, assertion, and claim will be used throughout the document.
 
-## High Level Architecture
-![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
-
-## SAML 2.0 Authentication Context Excluded Features
+### SAML 2.0 Authentication Context Excluded Features
 This minimum interoperabilty profile explicitly does not attempt to alter SAML 2.0 functionality, however there is a small set of SAML 2.0 functionality that is from the interoperability profile and should be avoided by implementers:
  * Comparison operators (`minimum`, `maximum`, `exist`)
  * Authentication Context Declaration References
@@ -62,12 +59,29 @@ This minimum interoperabilty profile explicitly does not attempt to alter SAML 2
 ## OpenID Connect Minimum Profile
 Requirements in this section are normative and augment the existing normative requirements in [OIDC]. This profile defines five phases where ACR requirements are modified:
 
+                                             0. End user
+                                             │  access attempt
+                                             ▼
+      ┌─────────────────┐  1. ACR Metadata  ┌─────────────────┐
+      │                 │ ◄─ ─ ─ ─ ─ ─ ─ ─► │                 │
+      │    Identity     │                   │     Relying     │
+      │    Provider     │                   │      Party      │
+      │                 │  2. ACR Request   │                 │
+      │ ┌─────────────┐ │ ◄──────────────── │                 │
+      │ │3. ACR       │ │                   │                 │
+      │ │   Evaluation│ │                   │                 │
+      │ └─────────────┘ │ ────────────────► │ ┌─────────────┐ │
+      │                 │  4. ACR Response  │ │5. ACR       │ │
+      │                 │                   │ │   Validation│ │
+      │                 │                   │ └─────────────┘ │
+      └─────────────────┘                   └─────────────────┘
+
  1. __ACR Metadata__: An RP looks up ACR-related properties published by an IDP relating to profile adherence and claim support in advance of or at time of an individual federated interaction.  
  1. __ACR Request__: An RP generates an authentication request that contains parameters and values specifying one or more authentication contexts as an essential part of federated processing. 
  1. __ACR Evaluation__: An IDP evaluates an ACR request and determines whether an end user meets the criteria specified, performing any necessary interactions needed to bring an end-user into adherence, or determining that adherence is not possible.
  1. __ACR Return__: An IDP responds to a given ACR request with either an error message or a valid assertion containing ACR-compliant claims and claim values that matches the results of the ACR Evaluation.
  1. __ACR Validation__: An RP validates a received assertion to ensure the IDP has met all of the original requirements of the ACR Request and either allows access or returns an error to the user.
-
+![image](https://github.com/pamelatech/ACRminprofile/assets/2591320/5398d172-5a54-46bf-b79b-3f168c53abb5)
 ### ACR Request
 #### Request Parameters
 The claims parameter defined in [OIDC] §5.5 MUST be include in the authentication request. The `acr_values`parameter defined in [OIDC] §3.1.2.1 MUST NOT be included in the authentication request.  If the authentication request includes both the acr_values parameter and a claims parameter and the `acr` claim is a defined value the IDP MUST return an error (note this extends guidance in [OIDC] §5.5.1.1 .
