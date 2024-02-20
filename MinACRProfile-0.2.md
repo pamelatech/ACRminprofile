@@ -4,7 +4,7 @@ To be submitted to: OpenID Foundation Connect WG
 
 February 2024 (draft)
 ## Abstract
-OpenID Connect 1.0 codifies the use of authentication context in a federated transaction as a "voluntary" security control to enforce for an openid provider. For relying parties that require security control enforcement to be considered essential, and for any implementer tasked with enforcing security controls that may involve nested SAML/OpenID Connect requests, this default behavior is painful to compensate for and results in ambiguity that could have dangerous security implications. This profile codifies a pattern by which an OpenID Provider may declare default treatment of any authentication context in a Relying Party request as essential, and provides processing rules and recommendations to mirror the processing logic of SAML 2.0, with an explicit goal of ensuring that federated interactions may be nested and transformed between the two protocols with no change to authentication context processing. 
+OpenID Connect 1.0 codifies the use of authentication context in a federated transaction as a "voluntary" security control to enforce for an openid provider. For relying parties that require security control enforcement to be considered essential, and for any implementer tasked with enforcing security controls that may involve nested SAML/OpenID Connect requests, this default behavior is painful to compensate for and results in ambiguity that could have security implications. This profile codifies a pattern by which an OpenID Provider may declare default treatment of any authentication context in a Relying Party request as essential, and provides processing rules and recommendations to mirror the processing logic of SAML 2.0, with an explicit goal of ensuring that federated interactions may be nested and transformed between the two protocols with no change to authentication context processing. 
 
 ## Introduction
 SAML[SAML] and OpenID Connect[OIDC] operate effectively side-by-side in many identity architectures as mechanisms for secure introduction of end users across federated parties. Each protocol adopts the concept of ‘authentication context’ to describe the security controls negotiated between parties, yet differences in default processing logic create difficulty for federated entities with high assurance processing requirements, specifically relying parties that expect OPs not to issue assertions in the case where essential security controls cannot be met. While it is in theory possible for a relying party to structure an [OIDC] authentication request to redefine the acr claim as essential rather than voluntary, to do so requires support for the `claims` request parameter ([OIDC] section 5.5), and very few implementations support this parameter to date.
@@ -52,11 +52,55 @@ Requirements in this section are normative and augment the existing normative re
  1. __ACR Validation__: The RP validates the received id_token to ensure the OP has met the requirements in the ACR Request.
 
 # ACR Discovery
- * OP MUST publish REQUIRED: [OIDCDISC] acr_values_supported
- * OP MAY publish `any` claim as a supported value.
- * OP MUST publish REQUIRED: [OIDCDISC] claims_parameter_supported
- * OP MUST publish NEW:     acr_minprofile_supported
+## OP Metadata Profile support
+The OP MUST publish an [OIDCDISC] compliant discovery endpoint and discovery document. The following new OP metadata claim MUST be present within the discovery document:
 
+acr_essential_supported<br/>
+&ensp;&ensp;&ensp;OPTIONAL. Boolean value specifying whether the OP supports conformance to this specification, with `true` indicating support. If omitted, the default value is `false`.  
+
+The following metadata claims defined in [OIDCDISC] section 3 MUST be present in the discovery document:
+
+acr_values_supported<br/>
+&ensp;&ensp;&ensp;REQUIRED. JSON array containing a list of the ACRs that this OP will enforce on request. 
+
+claims_parameter_supported<br/>
+&ensp;&ensp;&ensp;REQUIRED. Boolean value specifying whether the OP supports use of the claims parameter, with true indicating support. 
+
+The OP MUST list at least one ACR in the `acr_values_supported` JSON array to conform to this profile. 
+
+The following is a truncated non-normative example [OIDCDISC] discovery endpoint response containing profile-conformant metadata:
+       HTTP/1.1 200 OK
+        Content-Type: application/json
+      
+        {
+         "issuer":  "https://server.example.com",
+           ...
+         "acr_essential_supported":     true,
+         "acr_values_supported":        ["phr","mfa"],
+          "claims_parameter_supported": false,
+          ...
+         }
+
+### Voluntary Processing when ACR is specified
+To re-enable the option of voluntary processing for an RP that wants to request preferred security controls but expects to receive an id_token even if none of the controls could be met, the OP MAY advertise the `any` ACR (defined below) as a [OIDCDISC] `acr_values_supported` metadata value.  
+
+any 
+&ensp;&ensp;&ensp;Any established authentication context. 
+
+The following is a truncated non-normative example [OIDCDISC] discovery endpoint response containing profile-conformant metadata where voluntary processing has been re-enabled:
+
+       HTTP/1.1 200 OK
+        Content-Type: application/json
+      
+        {
+         "issuer":  "https://server.example.com",
+           ...
+         "acr_essential_supported":     true,
+         "acr_values_supported":        ["phr","mfa","pwd","any"],
+         "claims_parameter_supported": false,
+          ...
+         }
+         
 # ACR Request
  * If RP cannot find metadata, ??
  * RP MUST use either acr_values or claims request parameter in request
@@ -70,6 +114,10 @@ Requirements in this section are normative and augment the existing normative re
 # ACR Response
 # ACR Validation
 
+
+# Security Considerations
+
+## Authentication Request Tampering
 
 # References
 [OIDC] OpenID Connect Core 1.0 incorporating errata set 2. https://openid.net/specs/openid-connect-core-1_0.html.
