@@ -84,7 +84,7 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
 Any OP that chooses to always return an id_token similar to what can happen in the [OIDC] default voluntary processing can still achieve that goal by ensuring that the ACRs in the `acr_values_supported` metadata are an inclusive list of every authentication context the OP can support.  When the OP's `acr_values_supported` metadata is a complete list, an RP that includes every ACR in a request (ordered for preference of enforcement) will always get an id_token. 
 
 ### ACR Request
-The ACR request is an [OIDC] section 3.2.2.1. compliant authentication request that MUST specify ACR values via only one of two methods:
+The ACR request is an [OIDC] section 3.2.2.1. compliant authentication request that MUST specify ACR values via one of two methods:
 
 #### ACR values in claims request parameter
 The RP MAY include the claims parameter defined in [OIDC] §5.5 in the authentication request. Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
@@ -109,24 +109,67 @@ If ACR Metadata fetched by the RP contains the metadata `acr_essential_supported
 
 A non-normative example of an acr_values parameter within an ACR request follows: 
 
-      [phr mfa pwd]
+      phr mfa pwd
 
-It is RECOMMENDED that RPs implement the `acr_values` request parameter. If the authentication request includes both the acr_values parameter and the claims request parameter and the `acr` claim is a defined value with the claims request object, the IDP MUST return an error (note this extends important guidance in [OIDC] §5.5.1.1). 
+The above parameter values in context of a full ACR Request follows:
+
+      HTTP/1.1 302 Found
+      Location: https://server.example.com/authorize?
+        response_type=code
+        &acr_values=phr%20mfa%20pwd
+        &scope=openid%20profile%20email
+        &client_id=s6BhdRkqt3
+        &state=af0ifjsldkj
+        &redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb
+
+It is RECOMMENDED that RPs preferentially use the `acr_values` request parameter over the claims request parameter where possible. If the ACR request includes both the acr_values parameter and the claims request parameter and the `acr` claim is a defined value with the claims request object, the IDP MUST return `malformed_acr_parameters` (note this extends important guidance in [OIDC] §5.5.1.1). 
 
 # ACR Evaluation
-ACR Evaluation acts upon an ACR Request and adds additional processing requirements to core specification requirements including but not limited to [OIDC] sections 3.1.2.2, 3.1.2.3, 3.1.2.4 and 5.5.1.1.
+ACR Evaluation is performed by the OP and acts upon an ACR Request. ACR evaluation adds processing requirements to core specification requirements including but not limited to [OIDC] sections 3.1.2.2, 3.1.2.3, 3.1.2.4 and 5.5.1.1.
 
-The OP MUST test the ACR request for the simultaneous presence of the `acr_values` request parameter and an `acr` element in the claims request parameter JSON object. If simultaneous presence is found, the OP MUST return <error2>.  If the essential boolean value included in a present acr element is set to false, this profile cannot be applied to the ACR Request, and the OP SHOULD return <error3>.
+The OP MUST test the ACR request for the simultaneous presence of the `acr_values` request parameter and an `acr` element in the claims request parameter JSON object. If simultaneous presence is found, the OP MUST return the `malformed_acr_parameters` error code.  If the essential boolean value included in a present acr element is set to false, this profile cannot be applied to the ACR Request, and the OP SHOULD return the `malformed_acr_parameters` error code.
 
 OPs performing anomaly detection SHOULD detect whether each RP consistently uses this profile.   Authentication requests that usually contain an essential acr claim in the claims parameter but suddenly arrive with no acr requirements or voluntary acr requirements should be treated as suspicious. 
 
 As stated in  [OIDC] §5.5.1.1:
 > If the acr Claim is requested as an Essential Claim for the ID Token with a values parameter requesting specific Authentication Context Class Reference values and the implementation supports the claims parameter, the Authorization Server MUST return an acr Claim Value that matches one of the requested values. The Authorization Server MAY ask the End-User to re-authenticate with additional factors to meet this requirement. If this is an Essential Claim and the requirement cannot be met, then the Authorization Server MUST treat that outcome as a failed authentication attempt.
 
-This profile defines any specification of an ACR (by any method) as an essential claim.  This means that section 5.5.1.1 applies to any authentication request that is also an ACR request.  OPs SHOULD advise RPs that have an unacceptable rate of failed authentication attempts to revise their requested ACR arrays to be more inclusive in order to change the number of situations in which an id_token can be returned.
+This profile defines any specification of an ACR (by any method) as an essential claim.  This means that section 5.5.1.1 applies to any authentication request that is also an ACR request.  OPs SHOULD advise RPs that have an unacceptable rate of failed authentication attempts to revise their requested ACR values to be more match more of the OP's supported ACR values in order to change the number of situations in which an id_token can be returned.
 
 # ACR Response
+An ACR response is a 
+The OP MUST only r
+
+ensure the returned assertion conforms with [OIDC] and additionally has the following properties:
+* The acr attribute MUST contain a single value that represents the first matching acr value listed in the acr element of the claims parameter.
+* The acrs attribute MAY contain a multi-valued array of strings that represents all matching acr values from the claims parameter, plus other unsolicited acr values.
+* If the acrs attribute is supported, the IDP MUST do the following:
+  * Prevent any other party from populating an attribute called “acrs”
+  * Always populate the acrs attribute when an essential acr claim is requested. 
+
+An example of a valid ACR return is listed below:
+
+    {
+      "iss": "https://example.com/tenantb",
+      "sub": "Ay782bbtaQ",
+      "aud": "6cb045aef3",
+      "exp": 1536361411,
+      "name": "Joanna Smith",
+      "nonce": "12353",
+      "acr": "inherence",
+      "acrs": ["inherence", "possession", "fips140"],
+      "amr": ["phrh", "Yubikey5c"]
+    }
 # ACR Validation
+
+# ACR Error Response
+An ACR error response MUST conform to [OIDC] section 3.1.2.5 and 3.1.2.6. 
+The following additional error codes are in scope of this profile:
+
+unmet_authentication_requirements - defined in [OIDCUAR]
+
+malformed_acr_parameters
+&ensp;&ensp;&ensp;The OpenID Provider is unable to process the authentication request due to ambiguous specification of ACR values in either the acr_values parameter or the claims request parameter (or both).
 
 
 # Security Considerations
