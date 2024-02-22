@@ -114,9 +114,17 @@ A non-normative example of an acr_values parameter within an ACR request follows
 It is RECOMMENDED that RPs implement the `acr_values` request parameter. If the authentication request includes both the acr_values parameter and the claims request parameter and the `acr` claim is a defined value with the claims request object, the IDP MUST return an error (note this extends important guidance in [OIDC] §5.5.1.1). 
 
 # ACR Evaluation
- * OP MUST ensure that claims parameter & acr_values don't contradict
- * If OP supports minprofile and claims request states voluntary, add "any" to acr list and return any if no other security contexts are found.
- * 
+ACR Evaluation acts upon an ACR Request and adds additional processing requirements to core specification requirements including but not limited to [OIDC] sections 3.1.2.2, 3.1.2.3, 3.1.2.4 and 5.5.1.1.
+
+The OP MUST test the ACR request for the simultaneous presence of the `acr_values` request parameter and an `acr` element in the claims request parameter JSON object. If simultaneous presence is found, the OP MUST return <error2>.  If the essential boolean value included in a present acr element is set to false, this profile cannot be applied to the ACR Request, and the OP SHOULD return <error3>.
+
+OPs performing anomaly detection SHOULD detect whether each RP consistently uses this profile.   Authentication requests that usually contain an essential acr claim in the claims parameter but suddenly arrive with no acr requirements or voluntary acr requirements should be treated as suspicious. 
+
+As stated in  [OIDC] §5.5.1.1:
+> If the acr Claim is requested as an Essential Claim for the ID Token with a values parameter requesting specific Authentication Context Class Reference values and the implementation supports the claims parameter, the Authorization Server MUST return an acr Claim Value that matches one of the requested values. The Authorization Server MAY ask the End-User to re-authenticate with additional factors to meet this requirement. If this is an Essential Claim and the requirement cannot be met, then the Authorization Server MUST treat that outcome as a failed authentication attempt.
+
+This profile defines any specification of an ACR (by any method) as an essential claim.  This means that section 5.5.1.1 applies to any authentication request that is also an ACR request.  OPs SHOULD advise RPs that have an unacceptable rate of failed authentication attempts to revise their requested ACR arrays to be more inclusive in order to change the number of situations in which an id_token can be returned.
+
 # ACR Response
 # ACR Validation
 
