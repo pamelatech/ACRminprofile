@@ -80,33 +80,39 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
           "claims_parameter_supported": false,
           ...
          }
+### Voluntary Processing
+Any OP that chooses to always return an id_token similar to what can happen in the [OIDC] default voluntary processing can still achieve that goal by ensuring that the ACRs in the `acr_values_supported` metadata are an inclusive list of every authentication context the OP can support.  When the OP's `acr_values_supported` metadata is a complete list, an RP that includes every ACR in a request (ordered for preference of enforcement) will always get an id_token. 
 
-### Voluntary Processing when ACR is specified
-To re-enable the option of voluntary processing for an RP that wants to request preferred security controls but expects to receive an id_token even if none of the controls could be met, the OP MAY advertise the `any` ACR (defined below) as a [OIDCDISC] `acr_values_supported` metadata value.  
+### ACR Request
+The ACR request is an [OIDC] section 3.2.2.1. compliant authentication request that MUST specify ACR values via only one of two methods:
 
-any 
-&ensp;&ensp;&ensp;Any established authentication context. 
+#### ACR values in claims request parameter
+The RP MAY include the claims parameter defined in [OIDC] §5.5 in the authentication request. Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
+* The `id_token` JSON object is REQUIRED.
+* The `acr` element of the `id_token` object is REQUIRED.
+* The `essential` element of the acr object MUST be set to true.
+* The values element within the acr object MUST be present and contain at least one value.
 
-The following is a truncated non-normative example [OIDCDISC] discovery endpoint response containing profile-conformant metadata where voluntary processing has been re-enabled:
+A non-normative example of an id_token object in a claims request parameter follows: 
 
-       HTTP/1.1 200 OK
-        Content-Type: application/json
-      
-        {
-         "issuer":  "https://server.example.com",
-           ...
-         "acr_essential_supported":     true,
-         "acr_values_supported":        ["phr","mfa","pwd","any"],
-         "claims_parameter_supported": false,
-          ...
-         }
-         
-# ACR Request
- * If RP cannot find metadata, ??
- * RP MUST use either acr_values or claims request parameter in request
- * If RP populates acr claim in request, it must request essential
- * If RP wants voluntary processing from an essential OP, must add "any" to end of ACR values.
- * 
+    {
+      "id_token": {
+        "acr": {
+          "essential": true,
+          "values": ["inherence","possession"]
+        }
+      }
+    }
+
+#### ACR values in profiled acr_values parameter
+If ACR Metadata fetched by the RP contains the metadata `acr_essential_supported`, the RP MUST consider the `acr_values` parameter defined in [OIDC] §3.1.2.1 as specifying essential acr values. 
+
+A non-normative example of an acr_values parameter within an ACR request follows: 
+
+      [phr mfa pwd]
+
+It is RECOMMENDED that RPs implement the `acr_values` request parameter. If the authentication request includes both the acr_values parameter and the claims request parameter and the `acr` claim is a defined value with the claims request object, the IDP MUST return an error (note this extends important guidance in [OIDC] §5.5.1.1). 
+
 # ACR Evaluation
  * OP MUST ensure that claims parameter & acr_values don't contradict
  * If OP supports minprofile and claims request states voluntary, add "any" to acr list and return any if no other security contexts are found.
