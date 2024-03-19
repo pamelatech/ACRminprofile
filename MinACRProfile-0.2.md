@@ -55,7 +55,7 @@ Requirements in this section are normative and augment the existing normative re
 ## OP Metadata Profile support
 The OP MUST publish an [OIDCDISC] compliant discovery endpoint and discovery document. The following new OP metadata claim MUST be present within the discovery document:
 
-acr_essential_supported<br/>
+acr_values_essential<br/>
 &ensp;&ensp;&ensp;OPTIONAL. Boolean value specifying whether the OP supports conformance to this specification, with `true` indicating support. If omitted, the default value is `false`.  
 
 The following metadata claims defined in [OIDCDISC] section 3 MUST be present in the discovery document:
@@ -75,7 +75,7 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
         {
          "issuer":  "https://server.example.com",
            ...
-         "acr_essential_supported":     true,
+         "acr_values_essential":     true,
          "acr_values_supported":        ["phr","mfa"],
           "claims_parameter_supported": false,
           ...
@@ -105,7 +105,7 @@ A non-normative example of an id_token object in a claims request parameter foll
     }
 
 #### ACR values in profiled acr_values parameter
-If ACR Metadata fetched by the RP contains the metadata `acr_essential_supported`, the RP MUST consider the `acr_values` parameter defined in [OIDC] §3.1.2.1 as specifying essential acr values. 
+If ACR Metadata fetched by the RP contains the metadata `acr_values_essential`, the RP MUST consider the `acr_values` parameter defined in [OIDC] §3.1.2.1 as specifying essential acr values. 
 
 A non-normative example of an acr_values parameter within an ACR request follows: 
 
