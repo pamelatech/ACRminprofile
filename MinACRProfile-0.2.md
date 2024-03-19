@@ -77,11 +77,11 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
          "acr_values_supported":        ["phr","mfa"],
           ...
          }
-### Voluntary Processing
-Any OP that chooses to always return an id_token similar to what can happen in the [OIDC] default voluntary processing can still achieve that goal by ensuring that the ACRs in the `acr_values_supported` metadata are an inclusive list of every authentication context the OP can support.  When the OP's `acr_values_supported` metadata is a complete list, an RP that includes every ACR in a request (ordered for preference of enforcement) will always get an id_token. 
 
 ### ACR Request
 The ACR request is an [OIDC] section 3.2.2.1. compliant authentication request that MUST specify ACR values via one of two methods:
+#### Compatibility with OIDC Default Voluntary Processing
+Any RP that wants to always get an id_token similar to what can happen in the [OIDC] default voluntary processing can still achieve that goal if the OP lists all the ACRs it supports in the acr_values_supported metadata. The RP can then include every ACR in a request (ordered for preference of enforcement) and get an id_token for any successful authentication.
 
 #### ACR values in claims request parameter
 The RP MAY include the claims parameter defined in [OIDC] §5.5 in the authentication request. Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
