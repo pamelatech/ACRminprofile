@@ -78,12 +78,12 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
           ...
          }
 
-### ACR Request
+# ACR Request
 The ACR request is an [OIDC] section 3.2.2.1. compliant authentication request that MUST specify ACR values via one of two methods:
-#### Compatibility with OIDC Default Voluntary Processing
+## Compatibility with OIDC Default Voluntary Processing
 Any RP that wants to always get an id_token similar to what can happen in the [OIDC] default voluntary processing can still achieve that goal if the OP lists all the ACRs it supports in the acr_values_supported metadata. The RP can then include every ACR in a request (ordered for preference of enforcement) and get an id_token for any successful authentication.
 
-#### ACR values in claims request parameter
+## ACR values in claims request parameter
 The RP MAY include the claims parameter defined in [OIDC] §5.5 in the authentication request. Within the JSON object contained by the claims parameter (see[OIDC] §5.5):
 * The `id_token` JSON object is REQUIRED.
 * The `acr` element of the `id_token` object is REQUIRED.
@@ -101,7 +101,7 @@ A non-normative example of an id_token object in a claims request parameter foll
       }
     }
 
-#### ACR values in profiled acr_values parameter
+## ACR values in profiled acr_values parameter
 If ACR Metadata fetched by the RP contains the metadata `acr_values_essential`, the RP MUST consider the `acr_values` parameter defined in [OIDC] §3.1.2.1 as specifying essential acr values. 
 
 A non-normative example of an acr_values parameter within an ACR request follows: 
