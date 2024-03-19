@@ -63,8 +63,6 @@ The following metadata claims defined in [OIDCDISC] section 3 MUST be present in
 acr_values_supported<br/>
 &ensp;&ensp;&ensp;REQUIRED. JSON array containing a list of the ACRs that this OP will enforce on request. 
 
-claims_parameter_supported<br/>
-&ensp;&ensp;&ensp;REQUIRED. Boolean value specifying whether the OP supports use of the claims parameter, with true indicating support. 
 
 The OP MUST list at least one ACR in the `acr_values_supported` JSON array to conform to this profile. 
 
@@ -77,7 +75,6 @@ The following is a truncated non-normative example [OIDCDISC] discovery endpoint
            ...
          "acr_values_essential":     true,
          "acr_values_supported":        ["phr","mfa"],
-          "claims_parameter_supported": false,
           ...
          }
 ### Voluntary Processing
