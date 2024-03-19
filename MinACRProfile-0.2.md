@@ -134,13 +134,12 @@ As stated in  [OIDC] §5.5.1.1:
 This profile defines any specification of an ACR (by any method) as an essential claim.  This means that section 5.5.1.1 applies to any authentication request that is also an ACR request.  OPs SHOULD advise RPs that have an unacceptable rate of failed authentication attempts to revise their requested ACR values to be more match more of the OP's supported ACR values in order to change the number of situations in which an id_token can be returned.
 
 # ACR Response
-An ACR response is a 
-The OP MUST only r
+The ACR response is an [OIDC] section XXX compliant authentication response that MUST specify an acr claim value within the id_token. 
 
-ensure the returned assertion conforms with [OIDC] and additionally has the following properties:
-* The acr attribute MUST contain a single value that represents the first matching acr value listed in the acr element of the claims parameter.
+The OP MUST ensure that every returned id_token conforms with [OIDC] and additionally has the following properties:
+* The acr claim MUST contain a single value that represents the first matching acr value listed in the acr element of the claims parameter.
 * The acrs attribute MAY contain a multi-valued array of strings that represents all matching acr values from the claims parameter, plus other unsolicited acr values.
-* If the acrs attribute is supported, the IDP MUST do the following:
+* If the acrs claim is supported, the IDP MUST do the following:
   * Prevent any other party from populating an attribute called “acrs”
   * Always populate the acrs attribute when an essential acr claim is requested. 
 
