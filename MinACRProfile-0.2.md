@@ -156,7 +156,12 @@ An example of a valid ACR return is listed below:
       "acrs": ["inherence", "possession", "fips140"],
       "amr": ["phrh", "Yubikey5c"]
     }
+
 # ACR Validation
+The RP MUST validate the token according to [OIDC] §3.1.3.7. In addition,the RP MUST discard the token and refuse to grant access if the following is true:
+* The returned token does not contain an `acr` claim.
+* The value in the `acr` claim contains a string that does not match an originally requested value.
+* The IDP advertises support for `acrs` via the `acrs_supported` metadata attribute, but the acrs attribute is not present.
 
 # ACR Error Response
 An ACR error response MUST conform to [OIDC] section 3.1.2.5 and 3.1.2.6. 
